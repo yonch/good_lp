@@ -85,16 +85,19 @@ impl SCIPProblem {
     /// Set model paramater as string
     pub fn set_str_param(&mut self, name: &str, value: &str)  -> Result<(), russcip::retcode::Retcode> {
         self.model = self.model.set_str_param(name, value)?;
+        Ok(())
     }
 
     /// Set model parameter as integer
     pub fn set_int_param(&mut self, name: &str, value: i32)  -> Result<(), russcip::retcode::Retcode> {
         self.model = self.model.set_int_param(name, value)?;
+        Ok(())
     }
 
     /// Set model parameter as real
     pub fn set_real_param(&mut self, name: &str, value: f64)  -> Result<(), russcip::retcode::Retcode> {
         self.model = self.model.set_real_param(name, value)?;
+        Ok(())
     }
 }
 

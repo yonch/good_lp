@@ -9,6 +9,7 @@ use russcip::model::ModelWithProblem;
 use russcip::model::ObjSense;
 use russcip::model::ProblemCreated;
 use russcip::model::Solved;
+use russcip::model::Unsolved;
 use russcip::variable::VarType;
 use russcip::ProblemOrSolving;
 use russcip::WithSolutions;
@@ -23,8 +24,17 @@ use crate::{Constraint, Variable};
 /// The [SCIP](https://scipopt.org) solver,
 /// to be used with [UnsolvedProblem::using].
 pub fn scip(to_solve: UnsolvedProblem) -> SCIPProblem {
-    let mut model = Model::new()
-        .hide_output()
+    let unsolved = Model::new()
+        .hide_output();
+
+    with_model(to_solve, unsolved)
+}
+
+/// The [SCIP](https://scipopt.org) solver,
+/// to be used with [UnsolvedProblem::using].
+/// This variant receives a russcip::model::Model, so the user can set model parameters.
+pub fn with_model(to_solve: UnsolvedProblem, unsolved: Model<Unsolved>) -> SCIPProblem {
+    let mut model = unsolved
         .include_default_plugins()
         .create_prob("problem")
         .set_obj_sense(match to_solve.direction {
@@ -80,24 +90,6 @@ impl SCIPProblem {
     /// Get mutable access to the raw russcip model
     pub fn as_inner_mut(&mut self) -> &mut Model<ProblemCreated> {
         &mut self.model
-    }
-
-    /// Set model paramater as string
-    pub fn set_str_param(&mut self, name: &str, value: &str)  -> Result<(), russcip::retcode::Retcode> {
-        self.model = self.model.set_str_param(name, value)?;
-        Ok(())
-    }
-
-    /// Set model parameter as integer
-    pub fn set_int_param(&mut self, name: &str, value: i32)  -> Result<(), russcip::retcode::Retcode> {
-        self.model = self.model.set_int_param(name, value)?;
-        Ok(())
-    }
-
-    /// Set model parameter as real
-    pub fn set_real_param(&mut self, name: &str, value: f64)  -> Result<(), russcip::retcode::Retcode> {
-        self.model = self.model.set_real_param(name, value)?;
-        Ok(())
     }
 }
 

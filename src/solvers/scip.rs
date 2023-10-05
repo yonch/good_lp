@@ -102,6 +102,7 @@ impl SolverModel for SCIPProblem {
         let status = solved_model.status();
         match status {
             russcip::status::Status::Optimal |
+            russcip::status::Status::GapLimit |
             russcip::status::Status::TimeLimit => Ok(SCIPSolved {
                 solved_problem: solved_model,
                 id_for_var: self.id_for_var,
